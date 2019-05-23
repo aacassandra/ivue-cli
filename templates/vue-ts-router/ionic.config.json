@@ -1,0 +1,8 @@
+{
+  "name": "custom",
+  "integrations": {
+    "cordova": {},
+    "ivue": {}
+  },
+  "type": "custom"
+}

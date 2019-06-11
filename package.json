@@ -1,6 +1,6 @@
 {
   "name": "@aacassandra/ivue-cli",
-  "version": "19.5.23",
+  "version": "19.6.11",
   "description": "This is Ionic-Vue CLI for cordova project",
   "main": "src/index.js",
   "bin": {

@@ -5,6 +5,7 @@ import ncp from "ncp";
 import path from "path";
 import {promisify} from "util";
 import execa from "execa";
+import shell from "shelljs";
 import pkg from "../json/package.json";
 import Listr from "listr";
 import {projectInstall} from "pkg-install";
@@ -480,6 +481,13 @@ export async function fillPackages(npm, opt) {
     "<name>HelloCordova</name>",
     "<name>" + opt.name + "</name>"
   );
+
+  await contentReplace(
+    opt.name + "/config.xml",
+    'id="io.cordova.hellocordova"',
+    'id="' + opt.domain + '"'
+  );
+
   await contentReplace(
     opt.name + "/config.xml",
     'version="1.0.0"',
@@ -548,41 +556,6 @@ export async function jsToXmlFile(filename, obj) {
 }
 
 export async function publicPrepaire(opt) {
-  await copyDirectories(
-    opt.targetDirectory + "/platforms/browser/www/cordova-js-src",
-    opt.targetDirectory + "/public/cordova-js-src"
-  );
-
-  await copyDirectories(
-    opt.targetDirectory + "/platforms/browser/www/img",
-    opt.targetDirectory + "/public/img"
-  );
-
-  await copyDirectories(
-    opt.targetDirectory + "/platforms/browser/www/plugins",
-    opt.targetDirectory + "/public/plugins"
-  );
-
-  await copyFile(
-    opt.targetDirectory + "/platforms/browser/www/config.xml",
-    opt.targetDirectory + "/public/config.xml"
-  );
-
-  await copyFile(
-    opt.targetDirectory + "/platforms/browser/www/cordova_plugins.js",
-    opt.targetDirectory + "/public/cordova_plugins.js"
-  );
-
-  await copyFile(
-    opt.targetDirectory + "/platforms/browser/www/cordova.js",
-    opt.targetDirectory + "/public/cordova.js"
-  );
-
-  await copyFile(
-    opt.targetDirectory + "/platforms/browser/www/manifest.json",
-    opt.targetDirectory + "/public/manifest.json"
-  );
-
   await xmlFileToJs(opt.name + "/config.xml", async function(err, obj) {
     if (err) throw err;
     let splash = [
@@ -636,13 +609,105 @@ export async function publicPrepaire(opt) {
         }
       }
     ];
+
+    let platform = [
+      {
+        $: {
+          name: "browser"
+        },
+        preference: {
+          $: {
+            name: "SplashScreen",
+            value: "img/logo.png"
+          }
+        }
+      },
+      {
+        $: {
+          name: "ios"
+        },
+        preference: {
+          $: {
+            name: "SplashScreen",
+            value: "screen"
+          }
+        }
+      },
+      {
+        $: {
+          name: "android"
+        },
+        preference: {
+          $: {
+            name: "SplashScreen",
+            value: "screen"
+          }
+        }
+      }
+    ];
+
     obj.widget = {
       ...obj.widget,
       preference: splash
     };
+
+    let browserFilled = false;
+    for (let i = 0; i < platform.length; i++) {
+      for (let u = 0; u < obj.widget.platform.length; u++) {
+        if (obj.widget.platform[u].$.name == platform[i].$.name) {
+          if (!obj.widget.platform[u].preference) {
+            obj.widget.platform[u] = {
+              ...obj.widget.platform[u],
+              preference: platform[i].preference
+            };
+          }
+        } else if (platform[i].$.name == "browser") {
+          if (browserFilled == false) {
+            obj.widget.platform.push(platform[i]);
+            browserFilled = true;
+          }
+        }
+      }
+    }
+
     await removeFile(opt.targetDirectory + "/config.xml");
     await jsToXmlFile(opt.targetDirectory + "/config.xml", obj);
   });
+  await shell.exec("cordova build browser");
+  await copyDirectories(
+    opt.targetDirectory + "/platforms/browser/www/cordova-js-src",
+    opt.targetDirectory + "/public/cordova-js-src"
+  );
+
+  await copyDirectories(
+    opt.targetDirectory + "/platforms/browser/www/img",
+    opt.targetDirectory + "/public/img"
+  );
+
+  await copyDirectories(
+    opt.targetDirectory + "/platforms/browser/www/plugins",
+    opt.targetDirectory + "/public/plugins"
+  );
+
+  await copyFile(
+    opt.targetDirectory + "/platforms/browser/www/config.xml",
+    opt.targetDirectory + "/public/config.xml"
+  );
+
+  await copyFile(
+    opt.targetDirectory + "/platforms/browser/www/cordova_plugins.js",
+    opt.targetDirectory + "/public/cordova_plugins.js"
+  );
+
+  await copyFile(
+    opt.targetDirectory + "/platforms/browser/www/cordova.js",
+    opt.targetDirectory + "/public/cordova.js"
+  );
+
+  await copyFile(
+    opt.targetDirectory + "/platforms/browser/www/manifest.json",
+    opt.targetDirectory + "/public/manifest.json"
+  );
 
   return;
 }

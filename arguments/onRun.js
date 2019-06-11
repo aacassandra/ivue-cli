@@ -10,7 +10,7 @@ import Listr from "listr";
 import {projectInstall} from "pkg-install";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
-import {readFile, createFile} from "../actions";
+import {readFile, createFile, copyDirectories, copyFile} from "../actions";
 
 let Danger = "#852222";
 let Success = "#228564";
@@ -36,7 +36,8 @@ async function onCompiling() {
 }
 
 async function onBuild(device) {
-  execa.shell("cordova run " + device);
+  let cmd = await execa.shell("cordova run " + device);
+  console.log(cmd.stdout);
   return;
 }
 
@@ -47,14 +48,11 @@ async function onListr(device) {
       {
         title: "Project compiling",
         task: () => onCompiling()
-      },
-      {
-        title: "Build " + device + " app",
-        task: () => onBuild(device)
       }
     ]);
     await tasks.run();
-    console.log("%s " + device + " app has running", chalk.green.bold("DONE"));
+    console.log("%s Compiling has successfully", chalk.green.bold("DONE"));
+    await onBuild(device);
     return true;
   } else {
     console.log(
@@ -77,14 +75,56 @@ export async function onRunProject(opt) {
   }
 }
 
+async function onBeforeServe() {
+  await execa.shell(
+    "rm -rf ./public/cordova.js ./public/manifest.json ./public/cordova-js-src ./public/plugins ./public/config.xml ./public/cordova_plugins.js"
+  );
+
+  await copyDirectories(
+    "platforms/browser/www/cordova-js-src",
+    "public/cordova-js-src"
+  );
+  await copyDirectories("platforms/browser/www/img", "public/img");
+  await copyDirectories("platforms/browser/www/plugins", "public/plugins");
+  await copyFile("platforms/browser/www/config.xml", "public/config.xml");
+  await copyFile(
+    "platforms/browser/www/cordova_plugins.js",
+    "public/cordova_plugins.js"
+  );
+  await copyFile("platforms/browser/www/cordova.js", "public/cordova.js");
+  await copyFile("platforms/browser/www/manifest.json", "public/manifest.json");
+}
+
 async function onServe() {
   let cmd = await shell.exec("npm run serve");
   console.log(chalk.red(cmd));
 }
 
+export async function onBuildDev(device) {
+  let cmd = await execa.shell("cordova build " + device);
+  return;
+}
+
 export async function onRunServe() {
-  await onCompiling();
-  onServe();
-  // console.log("%s development mode has running", chalk.green.bold("DONE"));
-  // return true;
+  const tasks = new Listr([
+    {
+      title: "Project compiling",
+      task: () => onCompiling()
+    },
+    {
+      title: "Project building",
+      task: () => onBuildDev("browser")
+    },
+    {
+      title: "Project Prepairing",
+      task: () => onBeforeServe()
+    }
+  ]);
+  await tasks.run();
+  console.log(
+    "%s Compiling and Prepairing has successfully",
+    chalk.green.bold("DONE")
+  );
+  await onServe();
+  return;
 }

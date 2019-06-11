@@ -1,6 +1,7 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import clear from "clear";
+import isValidDomain from "is-valid-domain";
 
 let Danger = "#852222";
 let Success = "#228564";
@@ -29,6 +30,20 @@ export async function selectFeatures(opt) {
       name: "git",
       message: "Initialize a git repository?",
       default: true
+    },
+    {
+      name: "domain",
+      type: "input",
+      message: "Enter your app domain:",
+      default: "com." + opt.name + ".app",
+      validate: function(value) {
+        value = isValidDomain(value);
+        if (value == true) {
+          return true;
+        } else {
+          return danger("Please input valid app domain (com.domain.example)");
+        }
+      }
     },
     {
       name: "version",
@@ -174,6 +189,7 @@ export async function onCreateQuestions(opt) {
         ...opt,
         preset: "manual",
         git: second.git,
+        domain: second.domain,
         version: second.version,
         description: second.description,
         saved: false

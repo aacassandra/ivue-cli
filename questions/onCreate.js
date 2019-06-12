@@ -159,13 +159,13 @@ export async function selectTsConfig(opt) {
       type: "confirm",
       name: "tsDecorator",
       message: "Use class-style component syntax?",
-      default: false
+      default: true
     },
     {
       type: "confirm",
       name: "tsBabel",
       message: "Use Babel alongside TypeScript for auto-detected polyfills?",
-      default: false
+      default: true
     }
   );
 

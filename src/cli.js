@@ -245,7 +245,7 @@ async function arg02(arg1, arg2) {
         process.stdout.write("\x1Bc");
         console.log(chalk.hex(Info)("iVue CLI v" + pkg.version));
         let res = await onRunQuestions();
-      } else if (arg2 == "serve") {
+      } else if (arg2 == "dev") {
         process.stdout.write("\x1Bc");
         console.log(chalk.hex(Info)("iVue CLI v" + pkg.version));
         let res = await onRunServe();

@@ -44,7 +44,7 @@
       "vue": "^2.6.10",
       "rxjs": "^6.5.1",
       "sql-promise-helper": "0.0.1-pre03",
-      "aac-ionic-vue-ts-plugins": "^19.5.19",
+      "@aacassandra/ivue-tsp-controller": "^19.6.122",
       "vue-router": "^3.0.3"
     },
     "devDependencies": {

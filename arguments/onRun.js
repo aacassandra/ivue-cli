@@ -10,7 +10,15 @@ import Listr from "listr";
 import {projectInstall} from "pkg-install";
 const access = promisify(fs.access);
 const copy = promisify(ncp);
-import {readFile, createFile, copyDirectories, copyFile} from "../actions";
+import {
+  readFile,
+  createFile,
+  copyDirectories,
+  copyFile,
+  fileReplace,
+  getIvueDirectory,
+  contentReplace
+} from "../actions";
 
 let Danger = "#852222";
 let Success = "#228564";
@@ -25,6 +33,23 @@ async function buildFixer() {
 }
 
 async function onCompiling() {
+  //Check if using typescript, fix typescript package
+  let check_1 = await readFile("tsconfig.json");
+  if (check_1.finded) {
+    let fileTarget = "node_modules/typescript/lib/lib.dom.d.ts";
+    let check_2 = await readFile(fileTarget);
+    if (check_2.finded) {
+      let string =
+        "type ElementTagNameMap = HTMLElementTagNameMap & Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;";
+      check_2 = await check_2.value.search(string);
+      if (check_2 != -1) {
+        let templateDir = await getIvueDirectory();
+        templateDir = templateDir + "/templates/lib.dom.d.ts";
+        fileReplace(fileTarget, templateDir);
+      }
+    }
+  }
+
   try {
     await execa.shell("npm run build");
   } catch (error) {
@@ -76,10 +101,6 @@ export async function onRunProject(opt) {
 }
 
 async function onBeforeServe() {
-  await execa.shell(
-    "rm -rf ./public/cordova.js ./public/manifest.json ./public/cordova-js-src ./public/plugins ./public/config.xml ./public/cordova_plugins.js"
-  );
-
   await copyDirectories(
     "platforms/browser/www/cordova-js-src",
     "public/cordova-js-src"

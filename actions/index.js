@@ -4,6 +4,7 @@ import {promisify} from "util";
 const copy = promisify(ncp);
 import execa from "execa";
 import replace from "replace";
+import path from "path";
 
 export async function createFile(
   fileName,
@@ -124,4 +125,19 @@ export async function readFile(source, mode = "utf8") {
       }
     });
   });
+}
+
+export async function fileReplace(fileTarget, fileReplacement) {
+  await removeFile(fileTarget);
+  await copyFile(fileReplacement, fileTarget);
+  return;
+}
+
+export async function getIvueDirectory() {
+  const currentFileUrl = import.meta.url;
+  const templateDir = await path.resolve(
+    new URL(currentFileUrl).pathname,
+    "../../"
+  );
+  return templateDir;
 }

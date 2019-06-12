@@ -115,6 +115,9 @@ export async function createMain(opt) {
         'import App from "./App.vue";\r\n' +
         'import router from "./router";\r\n' +
         'import store from "./store";\r\n' +
+        'import Ionic from "@ionic/vue";\r\n' +
+        'import "@ionic/core/css/ionic.bundle.css";\r\n' +
+        "Vue.use(Ionic);\r\n" +
         "\r\n" +
         "Vue.config.productionTip = false;\r\n" +
         "\r\n" +
@@ -128,6 +131,9 @@ export async function createMain(opt) {
         'import Vue from "vue";\r\n' +
         'import App from "./App.vue";\r\n' +
         'import router from "./router";\r\n' +
+        'import Ionic from "@ionic/vue";\r\n' +
+        'import "@ionic/core/css/ionic.bundle.css";\r\n' +
+        "Vue.use(Ionic);\r\n" +
         "\r\n" +
         "Vue.config.productionTip = false;\r\n" +
         "\r\n" +
@@ -143,6 +149,9 @@ export async function createMain(opt) {
         'import App from "./App.vue";\r\n' +
         'import router from "./router";\r\n' +
         'import store from "./store";\r\n' +
+        'import Ionic from "@ionic/vue";\r\n' +
+        'import "@ionic/core/css/ionic.bundle.css";\r\n' +
+        "Vue.use(Ionic);\r\n" +
         "\r\n" +
         "Vue.config.productionTip = false;\r\n" +
         "\r\n" +
@@ -158,6 +167,9 @@ export async function createMain(opt) {
         'import Vue from "vue";\r\n' +
         'import App from "./App.vue";\r\n' +
         'import router from "./router";\r\n' +
+        'import Ionic from "@ionic/vue";\r\n' +
+        'import "@ionic/core/css/ionic.bundle.css";\r\n' +
+        "Vue.use(Ionic);\r\n" +
         "\r\n" +
         "Vue.config.productionTip = false;\r\n" +
         "\r\n" +

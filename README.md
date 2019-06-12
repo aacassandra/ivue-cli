@@ -1,4 +1,4 @@
-# WebOS-Vue CLI
+# Ionic-Vue CLI
 Make Easy Your Ionic Project Using Ionic-Vue CLI. For more documentations [read](https://aacassandra.github.io/ivue-cli/)
 
 ## Introductions

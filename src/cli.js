@@ -12,7 +12,13 @@ import {onCreateProject, xmlFileToJs, jsToXmlFile} from "../arguments/onCreate";
 import {onPlugin, onPlatform} from "../arguments/onCordova";
 import {onRunQuestions} from "../questions/onRun";
 import {onRunServe} from "../arguments/onRun";
-import {readFile, createFile} from "../actions";
+import {
+  readFile,
+  createFile,
+  contentReplace,
+  getIvueDirectory,
+  fileReplace
+} from "../actions";
 let Danger = "#852222";
 let Success = "#228564";
 let Info = "#327a9e";
@@ -104,59 +110,24 @@ function OnHelp() {
 }
 
 async function arg00() {
-  // clear();
-  // console.log(
-  //   chalk.hex(Info)(
-  //     figlet.textSync("iVue", {
-  //       horizontalLayout: "full"
-  //     })
-  //   )
-  // );
-  // console.log("iVue is a CLI for ionic project with Vue framework");
-  // console.log("    ");
-  // await OnHelp();
-  // console.log("    ");
-  // await checkProjectDirectories();
-  let platform = [
-    {
-      $: {
-        name: "browser"
-      },
-      preference: {
-        $: {
-          name: "SplashScreen",
-          value: "img/logo.png"
-        }
-      }
-    },
-    {
-      $: {
-        name: "ios"
-      },
-      preference: {
-        $: {
-          name: "SplashScreen",
-          value: "screen"
-        }
-      }
-    },
-    {
-      $: {
-        name: "android"
-      },
-      preference: {
-        $: {
-          name: "SplashScreen",
-          value: "screen"
-        }
-      }
-    }
-  ];
+  clear();
+  console.log(
+    chalk.hex(Info)(
+      figlet.textSync("iVue", {
+        horizontalLayout: "full"
+      })
+    )
+  );
+  console.log("iVue is a CLI for ionic project with Vue framework");
+  console.log("    ");
+  await OnHelp();
+  console.log("    ");
+  await checkProjectDirectories();
 
-  await xmlFileToJs("config.xml", async function(err, obj) {
-    if (err) throw err;
-    console.log(JSON.stringify(obj, null, 2));
-  });
+  // await xmlFileToJs("config.xml", async function(err, obj) {
+  //   if (err) throw err;
+  //   console.log(JSON.stringify(obj, null, 2));
+  // });
 }
 
 async function arg01(arg1) {

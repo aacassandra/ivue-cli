@@ -1,2 +1,0 @@
-type ElementTagNameMap = HTMLElementTagNameMap & Pick<SVGElementTagNameMap, Exclude<keyof SVGElementTagNameMap, keyof HTMLElementTagNameMap>>;
-interface ElementTagNameMap extends HTMLElementTagNameMap, SVGElementTagNameMap { }

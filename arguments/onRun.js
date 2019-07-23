@@ -117,7 +117,7 @@ async function onBeforeServe() {
 }
 
 async function onServe() {
-  let cmd = await shell.exec("npm run serve");
+  let cmd = await shell.exec("npm run dev");
   console.log(chalk.red(cmd));
 }
 
